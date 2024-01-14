@@ -1,0 +1,80 @@
+{
+	"name": "dataflow1_alterrow",
+	"properties": {
+		"folder": {
+			"name": "Practice"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CSVDataset",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "CSVDataset",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          BusinessEntityID as short,",
+				"          NationalIDNumber as integer,",
+				"          LoginID as string,",
+				"          OrganizationNode as string,",
+				"          OrganizationLevel as short,",
+				"          JobTitle as string,",
+				"          BirthDate as string,",
+				"          MaritalStatus as string,",
+				"          Gender as string,",
+				"          HireDate as string,",
+				"          SalariedFlag as boolean,",
+				"          VacationHours as short,",
+				"          SickLeaveHours as short,",
+				"          CurrentFlag as boolean,",
+				"          rowguid as string,",
+				"          ModifiedDate as string",
+				"     ),",
+				"     allowSchemaDrift: false,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 alterRow(deleteIf(Gender=='M')) ~> alterRow1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          BusinessEntityID as string,",
+				"          NationalIDNumber as string,",
+				"          LoginID as string,",
+				"          OrganizationNode as string,",
+				"          OrganizationLevel as string,",
+				"          JobTitle as string,",
+				"          BirthDate as string,",
+				"          MaritalStatus as string,",
+				"          Gender as string,",
+				"          HireDate as string,",
+				"          SalariedFlag as string,",
+				"          VacationHours as string,",
+				"          SickLeaveHours as string,",
+				"          CurrentFlag as string,",
+				"          rowguid as string,",
+				"          ModifiedDate as string",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

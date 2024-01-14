@@ -1,0 +1,9 @@
+{
+	"name": "dataenggdatafctry",
+	"location": "southeastasia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "25ab1d12-6fa3-490b-bec2-5e1ecba1158c",
+		"tenantId": "e3155633-1269-4972-bd9b-7da3a474bc6d"
+	}
+}

@@ -1,0 +1,109 @@
+{
+	"name": "Movefrom_Onetable_to_another",
+	"properties": {
+		"activities": [
+			{
+				"name": "DbTableMove",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "SqlServerSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Id",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "Id",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "name",
+									"type": "String",
+									"physicalType": "char"
+								},
+								"sink": {
+									"name": "name",
+									"type": "String",
+									"physicalType": "char"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SqlServerDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"SourceTable": {
+								"value": "@pipeline().parameters.SouceTable",
+								"type": "Expression"
+							},
+							"DBName": "Demo001",
+							"SchemaName": "dbo"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SqlServerDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"SourceTable": {
+								"value": "@pipeline().parameters.TargetTable",
+								"type": "Expression"
+							},
+							"DBName": "Demo001",
+							"SchemaName": "dbo"
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"SouceTable": {
+				"type": "string"
+			},
+			"TargetTable": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Practice"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-01-08T20:59:26Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

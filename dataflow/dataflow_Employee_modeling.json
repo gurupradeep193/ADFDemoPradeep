@@ -1,0 +1,159 @@
+{
+	"name": "dataflow_Employee_modeling",
+	"properties": {
+		"folder": {
+			"name": "Practice"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CSVDataset",
+						"type": "DatasetReference"
+					},
+					"name": "Employee"
+				},
+				{
+					"dataset": {
+						"referenceName": "CSVDataset",
+						"type": "DatasetReference"
+					},
+					"name": "Department"
+				},
+				{
+					"dataset": {
+						"referenceName": "CSVDataset",
+						"type": "DatasetReference"
+					},
+					"name": "EmployeeDepartmentHistory"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "CSVDataset",
+						"type": "DatasetReference"
+					},
+					"name": "Output"
+				}
+			],
+			"transformations": [
+				{
+					"name": "joinEmployeeWithEmployeeDepartmentHist"
+				},
+				{
+					"name": "FinalJoin"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          BusinessEntityID as short,",
+				"          NationalIDNumber as integer,",
+				"          LoginID as string,",
+				"          OrganizationNode as string,",
+				"          OrganizationLevel as short,",
+				"          JobTitle as string,",
+				"          BirthDate as string,",
+				"          MaritalStatus as string,",
+				"          Gender as string,",
+				"          HireDate as string,",
+				"          SalariedFlag as boolean,",
+				"          VacationHours as short,",
+				"          SickLeaveHours as short,",
+				"          CurrentFlag as boolean,",
+				"          rowguid as string,",
+				"          ModifiedDate as string",
+				"     ),",
+				"     allowSchemaDrift: false,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Employee",
+				"source(output(",
+				"          DepartmentID as short,",
+				"          Name as string,",
+				"          GroupName as string,",
+				"          ModifiedDate as string",
+				"     ),",
+				"     allowSchemaDrift: false,",
+				"     validateSchema: true,",
+				"     ignoreNoFilesFound: false) ~> Department",
+				"source(output(",
+				"          BusinessEntityID as short,",
+				"          DepartmentID as short,",
+				"          ShiftID as short,",
+				"          StartDate as string,",
+				"          EndDate as string,",
+				"          ModifiedDate as string",
+				"     ),",
+				"     allowSchemaDrift: false,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> EmployeeDepartmentHistory",
+				"Employee, EmployeeDepartmentHistory join(Employee@BusinessEntityID == EmployeeDepartmentHistory@BusinessEntityID,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     partitionBy('hash', 1),",
+				"     broadcast: 'auto')~> joinEmployeeWithEmployeeDepartmentHist",
+				"joinEmployeeWithEmployeeDepartmentHist, Department join(EmployeeDepartmentHistory@DepartmentID == Department@DepartmentID,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> FinalJoin",
+				"FinalJoin select(mapColumn(",
+				"          BusinessEntityID = Employee@BusinessEntityID,",
+				"          NationalIDNumber,",
+				"          LoginID,",
+				"          OrganizationNode,",
+				"          OrganizationLevel,",
+				"          JobTitle,",
+				"          BirthDate,",
+				"          MaritalStatus,",
+				"          Gender,",
+				"          HireDate,",
+				"          SalariedFlag,",
+				"          VacationHours,",
+				"          SickLeaveHours,",
+				"          CurrentFlag,",
+				"          rowguid,",
+				"          ModifiedDate = Employee@ModifiedDate,",
+				"          BusinessEntityID = Employee@BusinessEntityID,",
+				"          DepartmentID = EmployeeDepartmentHistory@DepartmentID,",
+				"          ShiftID,",
+				"          StartDate,",
+				"          EndDate,",
+				"          Name,",
+				"          GroupName",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          BusinessEntityID as string,",
+				"          NationalIDNumber as string,",
+				"          LoginID as string,",
+				"          OrganizationNode as string,",
+				"          OrganizationLevel as string,",
+				"          JobTitle as string,",
+				"          BirthDate as string,",
+				"          MaritalStatus as string,",
+				"          Gender as string,",
+				"          HireDate as string,",
+				"          SalariedFlag as string,",
+				"          VacationHours as string,",
+				"          SickLeaveHours as string,",
+				"          CurrentFlag as string,",
+				"          rowguid as string,",
+				"          ModifiedDate as string",
+				"     ),",
+				"     partitionFileNames:['EmployeeModel.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> Output"
+			]
+		}
+	}
+}

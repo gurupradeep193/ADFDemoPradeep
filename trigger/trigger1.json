@@ -1,0 +1,25 @@
+{
+	"name": "trigger1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Movefrom_input_to_output",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/dataenggpracticecontainer/blobs/Input",
+			"blobPathEndsWith": ".pdf",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/2ac3395f-681d-4dba-8829-4e4802c47ebc/resourceGroups/Pradeep_DataEngg/providers/Microsoft.Storage/storageAccounts/dataenggpractice",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

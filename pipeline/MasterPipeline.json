@@ -1,0 +1,30 @@
+{
+	"name": "MasterPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Pipeline Db table insert",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Movefrom_Onetable_to_another",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"SouceTable": "Target",
+						"TargetTable": "Target2"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "Practice"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-12-29T15:21:40Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,21 @@
+{
+	"name": "SqlServer",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"DB": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=False;data source=QRA-Pradeep\\SQL2022;initial catalog=@{linkedService().DB};user id=Pradeep",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJjOWE4MzcxNS0yMmE0LTRhNDgtOWYwNS1kZjJiMzJlMjhmOWYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "SelfHostedRuntime001",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

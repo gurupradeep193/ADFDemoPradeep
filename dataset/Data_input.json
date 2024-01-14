@@ -1,0 +1,23 @@
+{
+	"name": "Data_input",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Ls_Source",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Practice"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Assignment_Homework_Solutions_Template.pdf",
+				"folderPath": "Input",
+				"container": "dataenggpracticecontainer"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

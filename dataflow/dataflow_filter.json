@@ -1,0 +1,103 @@
+{
+	"name": "dataflow_filter",
+	"properties": {
+		"folder": {
+			"name": "Practice"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CSVDataset",
+						"type": "DatasetReference"
+					},
+					"name": "EmployeeModel"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "CSVDataset",
+						"type": "DatasetReference"
+					},
+					"name": "sinkSingleEmployee"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filterEmployee",
+					"description": "Filtering Employee Data Who all are Single."
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          BusinessEntityID as short,",
+				"          NationalIDNumber as integer,",
+				"          LoginID as string,",
+				"          OrganizationNode as string,",
+				"          OrganizationLevel as short,",
+				"          JobTitle as string,",
+				"          BirthDate as string,",
+				"          MaritalStatus as string,",
+				"          Gender as string,",
+				"          HireDate as string,",
+				"          SalariedFlag as boolean,",
+				"          VacationHours as short,",
+				"          SickLeaveHours as short,",
+				"          CurrentFlag as boolean,",
+				"          rowguid as string,",
+				"          ModifiedDate as string,",
+				"          DepartmentID as short,",
+				"          ShiftID as short,",
+				"          StartDate as string,",
+				"          EndDate as string,",
+				"          Name as string,",
+				"          GroupName as string",
+				"     ),",
+				"     allowSchemaDrift: false,",
+				"     validateSchema: true,",
+				"     ignoreNoFilesFound: false) ~> EmployeeModel",
+				"EmployeeModel filter(equals(MaritalStatus, 'S')) ~> filterEmployee",
+				"filterEmployee sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          BusinessEntityID as string,",
+				"          NationalIDNumber as string,",
+				"          LoginID as string,",
+				"          OrganizationNode as string,",
+				"          OrganizationLevel as string,",
+				"          JobTitle as string,",
+				"          BirthDate as string,",
+				"          MaritalStatus as string,",
+				"          Gender as string,",
+				"          HireDate as string,",
+				"          SalariedFlag as string,",
+				"          VacationHours as string,",
+				"          SickLeaveHours as string,",
+				"          CurrentFlag as string,",
+				"          rowguid as string,",
+				"          ModifiedDate as string",
+				"     ),",
+				"     partitionFileNames:['EmployeeModelSingle.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          BusinessEntityID,",
+				"          NationalIDNumber,",
+				"          LoginID,",
+				"          OrganizationNode,",
+				"          OrganizationLevel,",
+				"          JobTitle,",
+				"          BirthDate,",
+				"          MaritalStatus,",
+				"          Gender,",
+				"          HireDate,",
+				"          Name,",
+				"          GroupName",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> sinkSingleEmployee"
+			]
+		}
+	}
+}

@@ -1,0 +1,82 @@
+{
+	"name": "dataflow_Department_Unpivot",
+	"properties": {
+		"folder": {
+			"name": "Practice"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CSVDataset",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DataFlowSinkLocation",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "unpivot1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "surrogateKey1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Name as string,",
+				"          DepartmentExecutive_General_and_Administration as integer,",
+				"          DepartmentInventory_Management as integer,",
+				"          DepartmentManufacturing as integer,",
+				"          DepartmentQuality_Assurance as integer,",
+				"          DepartmentResearch_and_Development as integer,",
+				"          DepartmentSales_and_Marketing as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 unpivot(output(",
+				"          GroupName as string,",
+				"          Department as integer",
+				"     ),",
+				"     ungroupBy(Name),",
+				"     lateral: true,",
+				"     ignoreNullPivots: false) ~> unpivot1",
+				"unpivot1 filter(not(isNull(Department))) ~> filter1",
+				"filter1 keyGenerate(output(DepartmetnID as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L,",
+				"     partitionBy('hash', 1)) ~> surrogateKey1",
+				"surrogateKey1 select(mapColumn(",
+				"          DepartmetnID,",
+				"          Name,",
+				"          GroupName",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['UnpivotDepartmentWithSurrogateKey.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

@@ -1,0 +1,73 @@
+{
+	"name": "DataFlow_EmployeeModeling",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataflow_Employee_modeling",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"Employee": {
+								"Folder": {
+									"value": "@pipeline().parameters.Folder",
+									"type": "Expression"
+								},
+								"FileName": "Employee.csv"
+							},
+							"Department": {
+								"Folder": {
+									"value": "@pipeline().parameters.Folder",
+									"type": "Expression"
+								},
+								"FileName": "Department.csv"
+							},
+							"EmployeeDepartmentHistory": {
+								"Folder": {
+									"value": "@pipeline().parameters.Folder",
+									"type": "Expression"
+								},
+								"FileName": "EmployeeDepartmentHistory.csv"
+							},
+							"Output": {
+								"Folder": {
+									"value": "@pipeline().parameters.Folder",
+									"type": "Expression"
+								},
+								"FileName": "FinalEmployee.csv"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"Folder": {
+				"type": "string",
+				"defaultValue": "CSVFiles"
+			}
+		},
+		"folder": {
+			"name": "DataFlow Pipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-01-11T06:26:15Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

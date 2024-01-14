@@ -1,0 +1,69 @@
+{
+	"name": "dataflow_Employee_AggregationByJob",
+	"properties": {
+		"folder": {
+			"name": "Practice"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CSVDataset",
+						"type": "DatasetReference"
+					},
+					"name": "Employee"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DataFlowSinkLocation",
+						"type": "DatasetReference"
+					},
+					"name": "sinktotarget"
+				}
+			],
+			"transformations": [
+				{
+					"name": "aggregateByJobTitle"
+				},
+				{
+					"name": "sortByEmployeeCount"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          BusinessEntityID as short,",
+				"          NationalIDNumber as integer,",
+				"          LoginID as string,",
+				"          OrganizationNode as string,",
+				"          OrganizationLevel as short,",
+				"          JobTitle as string,",
+				"          BirthDate as string,",
+				"          MaritalStatus as string,",
+				"          Gender as string,",
+				"          HireDate as string,",
+				"          SalariedFlag as boolean,",
+				"          VacationHours as short,",
+				"          SickLeaveHours as short,",
+				"          CurrentFlag as boolean,",
+				"          rowguid as string,",
+				"          ModifiedDate as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Employee",
+				"Employee aggregate(groupBy(JobTitle),",
+				"     {Total Employees} = count(BusinessEntityID)) ~> aggregateByJobTitle",
+				"aggregateByJobTitle sort(desc({Total Employees}, true)) ~> sortByEmployeeCount",
+				"sortByEmployeeCount sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['AggregatedEmployee.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sinktotarget"
+			]
+		}
+	}
+}

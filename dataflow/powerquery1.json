@@ -1,0 +1,23 @@
+{
+	"name": "powerquery1",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"folder": {
+			"name": "Practice"
+		},
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "CSVDataset",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> CSVDataset",
+					"dataset": {
+						"referenceName": "CSVDataset",
+						"type": "DatasetReference"
+					}
+				}
+			],
+			"script": "section Section1;\r\nshared CSVDataset = let AdfDoc = AzureStorage.BlobContents(\"https://dataenggpractice.blob.core.windows.net/dataenggpracticecontainer/CSVFiles/Employee.csv\"),Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]), PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true]) in  PromotedHeaders;\r\nshared UserQuery = let Source = #\"CSVDataset\",\r\n  #\"Removed other columns\" = Table.SelectColumns(Source, {\"BusinessEntityID\", \"NationalIDNumber\", \"JobTitle\", \"HireDate\"}) in #\"Removed other columns\";\r\n",
+			"documentLocale": "en-us"
+		}
+	}
+}
